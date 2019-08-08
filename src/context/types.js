@@ -1,0 +1,4 @@
+export const GET_COINS = "GET_COINS";
+export const GET_FAVORITE_COINS = "GET_FAVORITE_COINS";
+export const FILTER_COINS = "FILTER_COINS";
+export const ADD_FAVORITE_COIN = "ADD_FAVORITE_COIN";
