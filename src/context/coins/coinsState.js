@@ -5,8 +5,15 @@ import {
   GET_COINS,
   GET_FAVORITE_COINS,
   ADD_FAVORITE_COIN,
-  FILTER_COINS
+  REMOVE_FAVORITE_COIN,
+  SAVE_FAVORITE_COINS,
+  CLEAR_FAVORITE_COINS,
+  FILTER_COINS,
+  FETCH_COINS_PRICES,
+  SET_CURRENT_FAVORITE
 } from "../types";
+import _ from "lodash";
+import fuzzy from "fuzzy";
 
 const cc = require("cryptocompare");
 
@@ -14,7 +21,11 @@ const CoinState = props => {
   const initialState = {
     coins: null,
     favoriteCoins: [],
-    filtered: ""
+    filteredCoins: "",
+    coinPrices: [],
+    firstVisit: true,
+    currentPage: "",
+    currentFavorite: ""
   };
 
   const [state, dispatch] = useReducer(CoinReducer, initialState);
@@ -38,10 +49,79 @@ const CoinState = props => {
   };
 
   const addFavoriteCoin = coinKey => {
-    // console.log(coinKey);
     dispatch({
       type: ADD_FAVORITE_COIN,
       payload: coinKey
+    });
+  };
+
+  const removeFavoriteCoin = coinKey => {
+    dispatch({
+      type: REMOVE_FAVORITE_COIN,
+      payload: coinKey
+    });
+  };
+
+  const saveFavoriteCoins = () => {
+    dispatch({
+      type: SAVE_FAVORITE_COINS
+    });
+  };
+
+  const clearFavoriteCoins = () => {
+    dispatch({
+      type: CLEAR_FAVORITE_COINS
+    });
+  };
+
+  const handleFilter = _.debounce((inputValue, coins) => {
+    let coinSymbols = Object.keys(coins);
+    let coinNames = coinSymbols.map(sym => coins[sym].CoinName);
+    let allStringToSearch = coinSymbols.concat(coinNames);
+
+    let fuzzyResult = fuzzy
+      .filter(inputValue, allStringToSearch, {})
+      .map(result => result.string);
+    // console.log(fuzzyResult);
+
+    let filteredCoins = _.pickBy(coins, (result, symKey) => {
+      let coinName = result.CoinName;
+      return (
+        _.includes(fuzzyResult, symKey) || _.includes(fuzzyResult, coinName)
+      );
+    });
+
+    dispatch({
+      type: FILTER_COINS,
+      payload: filteredCoins
+    });
+  }, 500);
+
+  const filterCoins = text => {
+    handleFilter(text, state.coins);
+  };
+
+  const fetchCoinPrice = async () => {
+    let prices = [];
+    getFavoriteCoins();
+    for (let coin of state.favoriteCoins) {
+      try {
+        const price = await cc.priceFull(coin, "USD");
+        prices.push(price);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    dispatch({
+      type: FETCH_COINS_PRICES,
+      payload: prices
+    });
+  };
+
+  const setCurrentFavorite = index => {
+    dispatch({
+      type: SET_CURRENT_FAVORITE,
+      payload: index
     });
   };
 
@@ -50,10 +130,20 @@ const CoinState = props => {
       value={{
         coins: state.coins,
         favoriteCoins: state.favoriteCoins,
-        filtered: state.filtered,
+        filteredCoins: state.filteredCoins,
+        coinPrices: state.coinPrices,
+        firstVisit: state.firstVisit,
+        currentPage: state.currentPage,
+        currentFavorite: state.currentFavorite,
         getCoins,
         getFavoriteCoins,
-        addFavoriteCoin
+        addFavoriteCoin,
+        removeFavoriteCoin,
+        saveFavoriteCoins,
+        clearFavoriteCoins,
+        filterCoins,
+        fetchCoinPrice,
+        setCurrentFavorite
       }}
     >
       {props.children}

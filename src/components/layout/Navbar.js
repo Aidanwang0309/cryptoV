@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = props => {
   const Bar = styled.div`
     display: grid;
     grid-template-columns: 180px auto 100px 100px;
@@ -25,15 +26,13 @@ const Navbar = () => {
 
   const toProperCase = lower => lower.charAt(0).toUpperCase() + lower.substr(1);
 
-  const ControlButton = ({ name, active }) => {
+  const ControlButton = ({ name }) => {
     return (
-      <ControlButtonElem active={name === page} onClick={() => setPage(name)}>
+      <ControlButtonElem active={"/" + name === props.location.pathname}>
         {toProperCase(name)}
       </ControlButtonElem>
     );
   };
-
-  const [page, setPage] = useState("dashboard");
 
   return (
     <Bar>
@@ -43,10 +42,10 @@ const Navbar = () => {
         <ControlButton name="dashboard" />
       </Link>
       <Link to="setting" style={{ textDecoration: "none", color: "white" }}>
-        <ControlButton name="settings" />
+        <ControlButton name="setting" />
       </Link>
     </Bar>
   );
 };
 
-export default Navbar;
+export default withRouter(Navbar);

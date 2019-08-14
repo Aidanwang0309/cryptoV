@@ -1,21 +1,32 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import CoinContext from "../../context/coins/coinsContext";
-import GridItem from "./GridItem";
+import CoinGridItem from "./CoinGridItem";
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 150px));
+  grid-gap: 15px;
 `;
 
-const CoinGrid = ({ selected }) => {
+const CoinGrid = ({ selected, filtered }) => {
   const coinContext = useContext(CoinContext);
-  const { coins, favoriteCoins, getCoins } = coinContext;
+  const { coins, favoriteCoins, filteredCoins } = coinContext;
 
   const showCoins = cs => {
-    const coinKeys = selected ? favoriteCoins : Object.keys(cs).splice(0, 30);
-    return coinKeys.map(coinKey => (
-      <GridItem
+    let coinsKeys = Object.keys(cs).splice(0, 30);
+
+    if (selected) {
+      coinsKeys = favoriteCoins;
+    }
+    if (filtered) {
+      // console.log(filteredCoins);
+      coinsKeys = Object.keys(filteredCoins).splice(0, 30);
+    }
+
+    return coinsKeys.map(coinKey => (
+      <CoinGridItem
+        selected={selected}
         key={coins[coinKey].Id}
         coinkey={coins[coinKey].Name}
         name={coins[coinKey].CoinName}
