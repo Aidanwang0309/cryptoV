@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
-import CoinContext from "../../context/coins/coinsContext";
+import CoinContext from "../../../context/coins/coinsContext";
 import CoinGridItem from "./CoinGridItem";
 
 const Grid = styled.div`

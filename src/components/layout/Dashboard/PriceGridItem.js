@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import CoinContext from "../../context/coins/coinsContext";
+import CoinContext from "../../../context/coins/coinsContext";
 import styled, { css } from "styled-components";
-import { blurBackground } from "../../utils/Styles";
+import { blurBackground } from "../../../utils/Styles";
 import _ from "lodash";
 
 const GridItemBox = styled.div`
@@ -55,6 +55,8 @@ const PriceGridItem = props => {
   const coinContext = useContext(CoinContext);
   const { currentFavorite, setCurrentFavorite } = coinContext;
 
+  // const logo =
+
   const formatNumber = num => {
     return num.toFixed(3);
   };
@@ -78,6 +80,7 @@ const PriceGridItem = props => {
             src={`https://cryptocompare.com/${logo}`}
             alt="coin logo"
           /> */}
+
           <p>{name}</p>
           <Percentage drop={changeRate < 0}>
             {formatNumber(changeRate)}

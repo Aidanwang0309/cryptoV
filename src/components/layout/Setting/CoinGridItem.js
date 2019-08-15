@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import CoinContext from "../../context/coins/coinsContext";
+import CoinContext from "../../../context/coins/coinsContext";
 import styled from "styled-components";
-import { blurBackground } from "../../utils/Styles";
+import { blurBackground } from "../../../utils/Styles";
 import _ from "lodash";
 
 const GridItemBox = styled.div`

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import CoinContext from "../../context/coins/coinsContext";
 import styled from "styled-components";
-import CoinGrid from "../../components/layout/CoinGrid";
+import CoinGrid from "../../components/layout/Setting/CoinGrid";
 import Button from "../../components/layout/Button";
 import Search from "../layout/Search";
 // import { fontSize1, greenBoxShadow, color3 } from "../../utils/Styles";
