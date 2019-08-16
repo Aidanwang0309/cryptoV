@@ -36,7 +36,7 @@ const Navbar = props => {
 
   return (
     <Bar>
-      <div> CryptoDash </div>
+      <div> CryptoBoard </div>
       <div />
       <Link to="dashboard" style={{ textDecoration: "none", color: "white" }}>
         <ControlButton name="dashboard" />

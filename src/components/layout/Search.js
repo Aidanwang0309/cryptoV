@@ -1,10 +1,15 @@
 import React, { useContext, useState } from "react";
 import CoinContext from "../../context/coins/coinsContext";
 import styled from "styled-components";
+import { lightBlueBackground, fontSize2 } from "../../utils/Styles";
 
 const Input = styled.input`
   margin: 10px;
   padding: 20px;
+  ${lightBlueBackground}
+  color:white;
+  border: 0.2px;
+  ${fontSize2};
 `;
 
 const Search = () => {

@@ -32,28 +32,22 @@ const Dashboard = () => {
   useEffect(() => {
     getCoins();
     fetchCoinPrice();
+
     // eslint-disable-next-line
   }, [favoriteCoins.length]);
-
-  // const GetCoinImage = coinPrices.map(coinsPrice => {
-  //   if (coinsPrice[currentFavorite]) {
-  //     console.log(coinsPrice[currentFavorite]["USD"].IMAGEURL);
-  //     return coinsPrice[currentFavorite]["USD"].IMAGEURL;
-  //   }
-  // });
 
   return (
     <Fragment>
       <Grid>
         {coinPrices.map(price => (
-          <PriceGrid price={price} />
+          <PriceGrid key={Object.keys(price)[0]} price={price} />
         ))}
       </Grid>
 
-      {currentFavorite ? (
+      {coins && currentFavorite ? (
         <Info>
           <PriceProfile coin={coins[currentFavorite]} />
-          <PriceChart coin={coins[currentFavorite]} />
+          <PriceChart />
         </Info>
       ) : null}
     </Fragment>

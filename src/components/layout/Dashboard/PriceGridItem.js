@@ -1,8 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import CoinContext from "../../../context/coins/coinsContext";
 import styled, { css } from "styled-components";
 import { blurBackground } from "../../../utils/Styles";
-import _ from "lodash";
 
 const GridItemBox = styled.div`
   display: flex;
@@ -53,18 +52,26 @@ const PriceGridItem = props => {
   const { name, changeRate, price } = props;
 
   const coinContext = useContext(CoinContext);
-  const { currentFavorite, setCurrentFavorite } = coinContext;
+  const { currentFavorite, setCurrentFavorite, fetchHistorical } = coinContext;
 
-  // const logo =
+  useEffect(() => {
+    fetchHistorical();
+    // setCurrentFavorite(favoriteCoins[0]);
+    // fetchHistorical();
+    // eslint-disable-next-line
+  }, [currentFavorite]);
 
   const formatNumber = num => {
     return num.toFixed(3);
   };
 
+  const handleSelect = () => {
+    setCurrentFavorite(name);
+  };
   return (
     <SelectableContainer
       current={currentFavorite === name}
-      onClick={() => setCurrentFavorite(name)}
+      onClick={handleSelect}
     >
       <Blurback />
       <GridItemBox>

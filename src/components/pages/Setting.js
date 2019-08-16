@@ -14,6 +14,7 @@ const Grid = styled.div`
 const Setting = props => {
   const coinContext = useContext(CoinContext);
   const {
+    loading,
     coins,
     favoriteCoins,
     filteredCoins,
@@ -48,7 +49,13 @@ const Setting = props => {
         ) : null}
         <Search />
       </Grid>
-      {filteredCoins ? <CoinGrid filtered /> : <CoinGrid />}
+      {loading ? (
+        <h1>Loading</h1>
+      ) : filteredCoins ? (
+        <CoinGrid filtered />
+      ) : (
+        <CoinGrid />
+      )}
     </Fragment>
   );
 };

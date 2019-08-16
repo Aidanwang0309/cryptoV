@@ -6,5 +6,5 @@ body {
 }
 
 .highcharts-container {
-  height: 450px !important;
+  min-height: 450px !important;
 }

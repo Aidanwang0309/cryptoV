@@ -1,11 +1,13 @@
-import React, { Fragment } from "react";
+import React from "react";
 import styled from "styled-components";
+import { lightBlueBackground } from "../../../utils/Styles";
 
 const PriceProfileContainer = styled.div`
+  ${lightBlueBackground}
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #2a2e49;
+
   padding: 40px;
 `;
 
@@ -22,7 +24,7 @@ const PriceProfile = props => {
   return (
     <PriceProfileContainer>
       <h1>{coin.CoinName}</h1>
-      <img src={`https://cryptocompare.com/${coin.ImageUrl}`} />
+      <img src={`https://cryptocompare.com/${coin.ImageUrl}`} alt="coin logo" />
     </PriceProfileContainer>
   );
 };

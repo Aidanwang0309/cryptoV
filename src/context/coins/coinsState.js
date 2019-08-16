@@ -10,22 +10,29 @@ import {
   CLEAR_FAVORITE_COINS,
   FILTER_COINS,
   FETCH_COINS_PRICES,
-  SET_CURRENT_FAVORITE
+  SET_CURRENT_FAVORITE,
+  FETCH_HISTORICAL,
+  CHANGE_CHART_SELECT
 } from "../types";
 import _ from "lodash";
 import fuzzy from "fuzzy";
+import moment from "moment";
 
 const cc = require("cryptocompare");
+const TIME_UNITS = 10;
 
 const CoinState = props => {
   const initialState = {
+    loading: true,
     coins: null,
     favoriteCoins: [],
     filteredCoins: "",
     coinPrices: [],
     firstVisit: true,
     currentPage: "",
-    currentFavorite: ""
+    currentFavorite: "",
+    historical: null,
+    timeInterval: "months"
   };
 
   const [state, dispatch] = useReducer(CoinReducer, initialState);
@@ -104,6 +111,7 @@ const CoinState = props => {
   const fetchCoinPrice = async () => {
     let prices = [];
     getFavoriteCoins();
+
     for (let coin of state.favoriteCoins) {
       try {
         const price = await cc.priceFull(coin, "USD");
@@ -112,6 +120,7 @@ const CoinState = props => {
         console.log(err);
       }
     }
+    prices = prices.filter(price => Object.keys(price).length);
     dispatch({
       type: FETCH_COINS_PRICES,
       payload: prices
@@ -125,9 +134,55 @@ const CoinState = props => {
     });
   };
 
+  const fetchHistorical = async () => {
+    let results = await historical();
+
+    let historicaldata = [
+      {
+        name: state.currentFavorite,
+        data: results.map((ticker, index) => [
+          moment()
+            .subtract({ [state.timeInterval]: TIME_UNITS - index })
+            .valueOf(),
+          ticker.USD
+        ])
+      }
+    ];
+    dispatch({
+      type: FETCH_HISTORICAL,
+      payload: historicaldata
+    });
+  };
+
+  const historical = () => {
+    let data = [];
+
+    for (let units = TIME_UNITS; units > 0; units--) {
+      data.push(
+        cc.priceHistorical(
+          state.currentFavorite,
+          ["USD"],
+          moment()
+            .subtract({ [state.timeInterval]: units })
+            .toDate()
+        )
+      );
+    }
+    return Promise.all(data);
+  };
+
+  const changeChartSelect = value => {
+    console.log(value);
+    dispatch({
+      type: CHANGE_CHART_SELECT,
+      payload: value
+    });
+  };
+
   return (
     <CoinContext.Provider
       value={{
+        loading: state.loading,
         coins: state.coins,
         favoriteCoins: state.favoriteCoins,
         filteredCoins: state.filteredCoins,
@@ -135,6 +190,8 @@ const CoinState = props => {
         firstVisit: state.firstVisit,
         currentPage: state.currentPage,
         currentFavorite: state.currentFavorite,
+        historical: state.historical,
+        timeInterval: state.timeInterval,
         getCoins,
         getFavoriteCoins,
         addFavoriteCoin,
@@ -143,7 +200,9 @@ const CoinState = props => {
         clearFavoriteCoins,
         filterCoins,
         fetchCoinPrice,
-        setCurrentFavorite
+        setCurrentFavorite,
+        fetchHistorical,
+        changeChartSelect
       }}
     >
       {props.children}
